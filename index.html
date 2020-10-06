@@ -1,0 +1,161 @@
+<!DOCTYPE html">
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Game</title>
+</head>
+
+<body>
+    <span id="score" style="display: flex;">Score is 1</span>
+    <canvas id="game_canvas" width="800" height="800"></canvas>
+    <script>
+        let snake_pos;
+        let snake_vel;
+        let num_tiles = 20;
+
+        let trail;
+        let snake_size;
+
+        let apple_pos;
+
+        window.onload = () => {
+            canvas = document.getElementById("game_canvas");
+            messageSpan = document.getElementById("score");
+            context = canvas.getContext("2d");
+
+
+            document.addEventListener("keydown", keyPush);
+            setInterval(game_loop, 1000 / 15)
+
+
+            tile_length = canvas.width / num_tiles;
+            reset();
+
+        }
+
+        function reset() {
+            snake_pos = {
+                x: 10,
+                y: 10
+            }
+            snake_vel = {
+                x: 1,
+                y: 0
+            }
+            trail = [];
+            snake_size = 1;
+            generateApplePosition();
+            setMessage("Welcome to the snake game!")
+        }
+
+        function game_loop() {
+
+            updateSnakePosition();
+
+            paintBackground();
+            drawSnake();
+            drawApple();
+        }
+
+        function updateSnakePosition() {
+            //update snake position
+            snake_pos.x += snake_vel.x;
+            snake_pos.y += snake_vel.y;
+
+            if (snake_pos.x < 0) {
+                snake_pos.x = num_tiles - 1;
+            }
+            if (snake_pos.y < 0) {
+                snake_pos.y = num_tiles - 1;
+            }
+            if (snake_pos.y > num_tiles - 1) {
+                snake_pos.y = 0;
+            }
+            if (snake_pos.x > num_tiles - 1) {
+                snake_pos.x = 0;
+            }
+
+            //check new position
+            trail.forEach(pos => {
+
+                //check if lost
+                if (snake_pos.x == pos.x
+                    && snake_pos.y == pos.y) {
+                    alert("You lost. You score score was " + snake_size)
+                    reset();
+                }
+
+                //check if ate apple
+                if (snake_pos.x == apple_pos.x
+                    && snake_pos.y == apple_pos.y) {
+                    snake_size++;
+                    setMessage("Score is " + snake_size);
+                    generateApplePosition();
+                }
+            });
+
+            //save position history
+            trail.push(Object.assign({}, snake_pos));
+            while (trail.length > snake_size) {
+                trail.shift();
+            }
+        }
+
+        function setMessage(message){
+            messageSpan.innerHTML = message
+        }
+
+        function drawSnake() {
+            // console.log("Drawing snake in "+snake_pos.x*grid_size+" - "+snake_pos.y)
+            context.fillStyle = "lime"
+            trail.forEach(pos => {
+                context.fillRect(pos.x * tile_length, pos.y * tile_length, tile_length - 2, tile_length - 2)
+            })
+        }
+
+        function paintBackground() {
+            context.fillStyle = "black";
+            context.fillRect(0, 0, canvas.width, canvas.height)
+        }
+
+        function drawApple() {
+            context.fillStyle = "red"
+            context.fillRect(apple_pos.x * tile_length, apple_pos.y * tile_length, tile_length, tile_length)
+        }
+
+        function generateApplePosition() {
+            apple_pos = {
+                x: Math.floor(Math.random() * num_tiles),
+                y: Math.floor(Math.random() * num_tiles)
+            }
+
+            console.log("Generated apple in: " + apple_pos.x + "-" + apple_pos.y)
+        }
+
+        function keyPush(evt) {
+            switch (evt.keyCode) {
+                case 37:
+                    snake_vel.x = -1;
+                    snake_vel.y = 0;
+                    break;
+                case 38:
+                    snake_vel.x = 0;
+                    snake_vel.y = -1;
+                    break;
+                case 39:
+                    snake_vel.x = 1;
+                    snake_vel.y = 0;
+                    break;
+                case 40:
+                    snake_vel.x = 0;
+                    snake_vel.y = 1;
+                    break;
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
