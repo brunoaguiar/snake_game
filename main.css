@@ -1,0 +1,16 @@
+body {
+
+    background-color: lightslategrey;
+
+}
+
+span {
+    color: white;
+    font-weight: bold;    
+}
+
+canvas {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

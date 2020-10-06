@@ -4,16 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Snake Game</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-    <span id="score" style="display: flex;">Score is 1</span>
+
+    <span id="score"></span>
     <canvas id="game_canvas" width="800" height="800"></canvas>
+
     <script>
+        let num_tiles = 40;
+
         let snake_pos;
         let snake_vel;
-        let num_tiles = 20;
-
         let trail;
         let snake_size;
 
@@ -102,7 +105,7 @@
             }
         }
 
-        function setMessage(message){
+        function setMessage(message) {
             messageSpan.innerHTML = message
         }
 
