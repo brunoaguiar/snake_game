@@ -28,6 +28,19 @@
             size: 1
         }
 
+        let snake_two = {
+            position: {
+                x: 10,
+                y: 10
+            },
+            velocity: {
+                x: 1,
+                y: 0
+            },
+            trail: [],
+            size: 1
+        }
+
         let apple_pos;
 
         window.onload = () => {
@@ -59,6 +72,19 @@
                 trail: [],
                 size: 1
             }
+
+            snake_two = {
+                position: {
+                    x: 5,
+                    y: 5
+                },
+                velocity: {
+                    x: 1,
+                    y: 0
+                },
+                trail: [],
+                size: 1
+            }
             generateApplePosition();
             setMessage("Welcome to the snake game!")
         }
@@ -66,6 +92,7 @@
         function game_loop() {
 
             updateSnakePosition();
+            updateSnakePositionTwo();
 
             paintBackground();
             drawSnake();
@@ -116,6 +143,50 @@
             }
         }
 
+        function updateSnakePositionTwo() {
+            //update snake position
+            snake_two.position.x += snake_two.velocity.x;
+            snake_two.position.y += snake_two.velocity.y;
+
+            if (snake_two.position.x < 0) {
+                snake_two.position.x = num_tiles - 1;
+            }
+            if (snake_two.position.y < 0) {
+                snake_two.position.y = num_tiles - 1;
+            }
+            if (snake_two.position.y > num_tiles - 1) {
+                snake_two.position.y = 0;
+            }
+            if (snake_two.position.x > num_tiles - 1) {
+                snake_two.position.x = 0;
+            }
+
+            //check new position
+            snake_two.trail.forEach(pos => {
+
+                //check if lost
+                if (snake_two.position.x == pos.x
+                    && snake_two.position.y == pos.y) {
+                    alert("You lost. You score score was " + snake_two.size)
+                    reset();
+                }
+
+                //check if ate apple
+                if (snake_two.position.x == apple_pos.x
+                    && snake_two.position.y == apple_pos.y) {
+                    snake_two.size++;
+                    setMessage("Score is " + snake_two.size);
+                    generateApplePosition();
+                }
+            });
+
+            //save position history
+            snake_two.trail.push(Object.assign({}, snake_two.position));
+            while (snake_two.trail.length > snake_two.size) {
+                snake_two.trail.shift();
+            }
+        }
+
         function setMessage(message) {
             messageSpan.innerHTML = message
         }
@@ -123,6 +194,11 @@
         function drawSnake() {
             context.fillStyle = "lime"
             snake.trail.forEach(pos => {
+                context.fillRect(pos.x * tile_length, pos.y * tile_length, tile_length - 2, tile_length - 2)
+            })
+
+            context.fillStyle = "blue"
+            snake_two.trail.forEach(pos => {
                 context.fillRect(pos.x * tile_length, pos.y * tile_length, tile_length - 2, tile_length - 2)
             })
         }
@@ -148,22 +224,39 @@
 
         function keyPush(evt) {
             switch (evt.keyCode) {
-                case 37:
+                case 37://left arrow
                     snake.velocity.x = -1;
                     snake.velocity.y = 0;
                     break;
-                case 38:
+                case 38://up arrow
                     snake.velocity.x = 0;
                     snake.velocity.y = -1;
                     break;
-                case 39:
+                case 39://right arrow
                     snake.velocity.x = 1;
                     snake.velocity.y = 0;
                     break;
-                case 40:
+                case 40://down arrow
                     snake.velocity.x = 0;
                     snake.velocity.y = 1;
                     break;
+                case 87://w
+                    snake_two.velocity.y = -1;
+                    snake_two.velocity.x = 0;
+                    break;
+                case 65://a
+                    snake_two.velocity.y = 0;
+                    snake_two.velocity.x = -1;
+                    break;
+                case 83://s
+                    snake_two.velocity.y = 1;
+                    snake_two.velocity.x = 0;
+                    break;
+                case 68://d
+                    snake_two.velocity.y = 0;
+                    snake_two.velocity.x = 1;
+                    break;
+
             }
         }
 
