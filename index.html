@@ -15,10 +15,18 @@
     <script>
         let num_tiles = 40;
 
-        let snake_pos;
-        let snake_vel;
-        let trail;
-        let snake_size;
+        let snake = {
+            position: {
+                x: 10,
+                y: 10
+            },
+            velocity: {
+                x: 1,
+                y: 0
+            },
+            trail: [],
+            size: 1
+        }
 
         let apple_pos;
 
@@ -38,16 +46,19 @@
         }
 
         function reset() {
-            snake_pos = {
-                x: 10,
-                y: 10
+
+            snake = {
+                position: {
+                    x: 10,
+                    y: 10
+                },
+                velocity: {
+                    x: 1,
+                    y: 0
+                },
+                trail: [],
+                size: 1
             }
-            snake_vel = {
-                x: 1,
-                y: 0
-            }
-            trail = [];
-            snake_size = 1;
             generateApplePosition();
             setMessage("Welcome to the snake game!")
         }
@@ -63,45 +74,45 @@
 
         function updateSnakePosition() {
             //update snake position
-            snake_pos.x += snake_vel.x;
-            snake_pos.y += snake_vel.y;
+            snake.position.x += snake.velocity.x;
+            snake.position.y += snake.velocity.y;
 
-            if (snake_pos.x < 0) {
-                snake_pos.x = num_tiles - 1;
+            if (snake.position.x < 0) {
+                snake.position.x = num_tiles - 1;
             }
-            if (snake_pos.y < 0) {
-                snake_pos.y = num_tiles - 1;
+            if (snake.position.y < 0) {
+                snake.position.y = num_tiles - 1;
             }
-            if (snake_pos.y > num_tiles - 1) {
-                snake_pos.y = 0;
+            if (snake.position.y > num_tiles - 1) {
+                snake.position.y = 0;
             }
-            if (snake_pos.x > num_tiles - 1) {
-                snake_pos.x = 0;
+            if (snake.position.x > num_tiles - 1) {
+                snake.position.x = 0;
             }
 
             //check new position
-            trail.forEach(pos => {
+            snake.trail.forEach(pos => {
 
                 //check if lost
-                if (snake_pos.x == pos.x
-                    && snake_pos.y == pos.y) {
-                    alert("You lost. You score score was " + snake_size)
+                if (snake.position.x == pos.x
+                    && snake.position.y == pos.y) {
+                    alert("You lost. You score score was " + snake.size)
                     reset();
                 }
 
                 //check if ate apple
-                if (snake_pos.x == apple_pos.x
-                    && snake_pos.y == apple_pos.y) {
-                    snake_size++;
-                    setMessage("Score is " + snake_size);
+                if (snake.position.x == apple_pos.x
+                    && snake.position.y == apple_pos.y) {
+                    snake.size++;
+                    setMessage("Score is " + snake.size);
                     generateApplePosition();
                 }
             });
 
             //save position history
-            trail.push(Object.assign({}, snake_pos));
-            while (trail.length > snake_size) {
-                trail.shift();
+            snake.trail.push(Object.assign({}, snake.position));
+            while (snake.trail.length > snake.size) {
+                snake.trail.shift();
             }
         }
 
@@ -110,9 +121,8 @@
         }
 
         function drawSnake() {
-            // console.log("Drawing snake in "+snake_pos.x*grid_size+" - "+snake_pos.y)
             context.fillStyle = "lime"
-            trail.forEach(pos => {
+            snake.trail.forEach(pos => {
                 context.fillRect(pos.x * tile_length, pos.y * tile_length, tile_length - 2, tile_length - 2)
             })
         }
@@ -139,20 +149,20 @@
         function keyPush(evt) {
             switch (evt.keyCode) {
                 case 37:
-                    snake_vel.x = -1;
-                    snake_vel.y = 0;
+                    snake.velocity.x = -1;
+                    snake.velocity.y = 0;
                     break;
                 case 38:
-                    snake_vel.x = 0;
-                    snake_vel.y = -1;
+                    snake.velocity.x = 0;
+                    snake.velocity.y = -1;
                     break;
                 case 39:
-                    snake_vel.x = 1;
-                    snake_vel.y = 0;
+                    snake.velocity.x = 1;
+                    snake.velocity.y = 0;
                     break;
                 case 40:
-                    snake_vel.x = 0;
-                    snake_vel.y = 1;
+                    snake.velocity.x = 0;
+                    snake.velocity.y = 1;
                     break;
             }
         }
