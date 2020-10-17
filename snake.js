@@ -13,7 +13,7 @@ class Snake {
         this.size = 1;
     }
 
-    updatePosition(num_tiles, apple_pos) {
+    updatePosition(num_tiles, apple_pos, other_snake) {
         var result = "nothing";
 
         //update snake position
@@ -38,8 +38,7 @@ class Snake {
             if (this.position.x == pos.x
                 && this.position.y == pos.y) {                    
                 result = "lost";
-            }
-            
+            }            
         });
 
         //check if ate apple
@@ -49,6 +48,16 @@ class Snake {
             result = "apple";
         }
         
+        //check if bit other snake
+        other_snake.trail.forEach(pos => {
+            //check if lost
+            if (this.position.x == pos.x
+                && this.position.y == pos.y) {       
+
+                this.size++;
+                other_snake.size--;
+            }            
+        });
 
         //save position history
         this.trail.push(Object.assign({}, this.position));

@@ -3,9 +3,9 @@ window.onload = () => {
 
     var render = function () {
         display.drawBackground();
-        display.drawSnake(game.snake_one);
-        display.drawSnake(game.snake_two);
+        display.drawSnakes(game.snake_one, game.snake_two);        
         display.drawApple(game.apple_pos);
+        display.drawScore(game.snake_one.size, game.snake_two.size);
     }
     
     var update = function () {           
@@ -39,7 +39,5 @@ window.onload = () => {
 
 
 }
-function setMessage(message) {
-    messageSpan.innerHTML = message
-}
+
 
